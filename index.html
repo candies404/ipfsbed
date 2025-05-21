@@ -60,26 +60,37 @@
             cursor: pointer;
         }
         
-        #shareSelected {
-            display: none;
-            margin-left: 10px;
-            background-color: #409eff;
-            color: white;
-            border: none;
-            border-radius: 4px;
+        /* Updated button styles to be consistent */
+        .action-button {
+            display: inline-flex;
+            align-items: center;
             padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
             cursor: pointer;
             font-size: 14px;
+            color: white;
             transition: all 0.3s;
+            margin-left: 10px;
+            background-color: #409eff;
         }
         
-        #shareSelected:hover {
+        .action-button i {
+            margin-right: 5px;
+        }
+        
+        .action-button:hover {
             background-color: #66b1ff;
         }
         
-        #shareSelected.disabled {
+        .action-button.disabled {
             background-color: #c0c4cc;
             cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        #shareSelected, .copyall {
+            text-decoration: none;
         }
         
         .batch-actions {
@@ -103,6 +114,161 @@
             margin-left: 5px;
             font-size: 14px;
             color: #606266;
+        }
+
+        /* Modal styles */
+        #batchSharePassphraseModal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        #batchSharePassphraseModal .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        #batchSharePassphraseModal h3 {
+            margin-top: 0;
+        }
+
+        #batchSharePassphraseModal .input-wrapper {
+            margin-bottom: 15px;
+        }
+
+        #batchSharePassphraseModal .modal-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 优化 file-select-checkbox 在小屏幕下的尺寸 */
+        @media (max-width: 480px) {
+            .file-select-checkbox, #toggleAllFiles {
+                width: 14px;
+                height: 14px;
+            }
+            .toggle-all-label {
+                font-size: 12px;
+            }
+        }
+        /* 优化 batch-actions 在小屏幕下的间距 */
+        @media (max-width: 480px) {
+            .batch-actions {
+                gap: 4px;
+            }
+            .toggle-all-wrapper {
+                margin-right: 4px;
+            }
+        }
+        /* 优化 modal 在小屏幕下的宽度和圆角 */
+        @media (max-width: 480px) {
+            #batchSharePassphraseModal .modal-content {
+                padding: 10px 3vw;
+                max-width: 98vw;
+                border-radius: 8px;
+            }
+            #batchSharePassphraseModal input[type="password"],
+            #batchSharePassphraseModal input[type="text"] {
+                font-size: 13px;
+                border-radius: 6px;
+                padding: 8px 28px 8px 8px;
+            }
+            #batchSharePassphraseModal .modal-actions button {
+                font-size: 13px;
+                padding: 7px 12px;
+                border-radius: 6px;
+            }
+        }
+        /* 优化 action-button 和 copyall 在小屏幕下的尺寸 */
+        @media (max-width: 480px) {
+            .action-button, .copyall {
+                font-size: 12px;
+                padding: 4px 8px;
+                border-radius: 8px;
+                min-width: 48px;
+                margin-left: 4px;
+            }
+        }
+        /* 优化 lang-selector 在小屏幕下的位置 */
+        @media (max-width: 480px) {
+            .lang-selector {
+                right: 6px;
+            }
+            #langSelect {
+                font-size: 12px;
+                padding: 3px 6px;
+                border-radius: 6px;
+            }
+        }
+        /* 优化 passphrase-bar 在小屏幕下的布局 */
+        @media (max-width: 480px) {
+            .passphrase-bar {
+                padding: 7px 6px 3px 6px;
+                min-height: 28px;
+                border-radius: 8px 8px 0 0;
+            }
+            .passphrase-input-wrapper {
+                gap: 4px;
+            }
+            #passphraseInput {
+                font-size: 13px;
+                border-radius: 8px;
+                padding: 6px 10px;
+            }
+            .password-toggle {
+                padding: 4px 7px;
+                font-size: 13px;
+                border-radius: 6px;
+            }
+        }
+        /* 优化 footer 在小屏幕下的显示 */
+        @media (max-width: 480px) {
+            #footer {
+                font-size: 12px;
+                padding: 10px 4px;
+                border-radius: 8px 8px 0 0;
+            }
+            #footer .info {
+                margin-bottom: 6px;
+            }
+            #footer a {
+                margin: 0 4px;
+            }
+        }
+        /* 优化 toast 在小屏幕下的圆角和字体 */
+        @media (max-width: 480px) {
+            .toast {
+                border-radius: 8px;
+                font-size: 13px;
+                padding: 10px 12px;
+            }
+        }
+        /* 优化 select-group 在小屏幕下的间距 */
+        @media (max-width: 480px) {
+            .select-group {
+                gap: 5px;
+            }
+            .select-group label {
+                font-size: 12px;
+            }
+            .select-group select {
+                font-size: 13px;
+                border-radius: 8px;
+                padding: 6px 10px;
+                padding-right: 20px;
+            }
         }
     </style>
 </head>
@@ -161,10 +327,10 @@
                         <input type="checkbox" id="toggleAllFiles" disabled>
                         <span class="toggle-all-label" data-translate="select-all">全选</span>
                     </div>
-                    <button id="shareSelected" class="disabled" data-translate="share-selected">批量分享</button>
-                    <a href="javascript:void(0);" class="copyall" onclick="copyAllLinks()" title="复制所有链接">
+                    <button id="shareSelected" class="action-button disabled" data-translate="share-selected">批量分享</button>
+                    <a href="javascript:void(0);" class="copyall action-button disabled" onclick="copyAllLinks()" title="复制所有链接">
                         <i class="fas fa-copy"></i>
-                        复制全部
+                        <span data-translate="copy-all">复制全部</span>
                     </a>
                 </div>
             </div>
@@ -195,6 +361,24 @@
             <p id="passphraseError"></p>
         </div>
     </div>
+
+    <!-- New Modal for Batch Share Passphrase -->
+    <div id="batchSharePassphraseModal">
+        <div class="modal-content">
+            <h3 data-translate="batch-share-passphrase-title">Set Passphrase for Batch Share</h3>
+            <div class="input-wrapper">
+                <input type="password" id="batchPassphraseInput" data-translate-placeholder="batch-share-passphrase-placeholder" placeholder="Enter passphrase (optional, public if empty)">
+                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('batchPassphraseInput')" title="Show/Hide Password">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            <div class="modal-actions">
+                <button id="cancelBatchSharePassphrase" data-translate="batch-share-cancel">Cancel</button>
+                <button id="confirmBatchSharePassphrase" data-translate="batch-share-confirm-copy">Confirm & Copy Link</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Initialize language after DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
@@ -202,6 +386,12 @@
             document.querySelector('#langSelect').value = currentLang;
             // Update all UI elements with translations
             updatePageLanguage();
+            
+            // Set initial title for password toggle buttons
+            const passwordToggles = document.querySelectorAll('.password-toggle');
+            passwordToggles.forEach(toggle => {
+                toggle.title = _t('show-password');
+            });
         });
         
         // 添加切换密码可见性的函数
@@ -214,12 +404,12 @@
                 passwordInput.type = 'text';
                 icon.classList.remove('fa-eye');
                 icon.classList.add('fa-eye-slash');
-                toggleButton.title = '隐藏密码';
+                toggleButton.title = _t('hide-password');
             } else {
                 passwordInput.type = 'password';
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye');
-                toggleButton.title = '显示密码';
+                toggleButton.title = _t('show-password');
             }
         }
     </script>

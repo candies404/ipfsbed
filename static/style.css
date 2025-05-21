@@ -49,11 +49,11 @@ html {
 }
 
 body {
-    min-height: 100%;
+    min-height: 100vh; /* Changed from 100% to 100vh */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between; /* Changed from center to space-between */
     background: radial-gradient(circle at 60% 40%, rgba(117, 113, 251, 0.7) 0%, rgba(62, 144, 238, 0.7) 40%, rgba(68, 155, 255, 0.7) 70%, rgba(9, 69, 138, 0.2) 100%);
     background-size: 300% 300%;
     background-attachment: fixed;
@@ -237,6 +237,13 @@ body {
     z-index: 1;
 }
 
+/* 优化上传描述字体和间距 */
+.upload .content .desc {
+    font-size: 15px;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
 .upload .content:hover .desc {
     color: #333;
 }
@@ -274,15 +281,23 @@ body {
 }
 
 .filelist .list .item {
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Reduced from 20px */
     background-color: #f9fafc;
     border-radius: 12px;
-    padding: 18px;
+    padding: 14px; /* Reduced from 18px */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+/* 优化 filelist 列表项在不同屏幕的圆角和阴影 */
+.filelist .list .item {
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    margin-bottom: 12px;
+    padding: 11px;
 }
 
 .filelist .list .item:hover {
@@ -294,23 +309,18 @@ body {
 .filelist .list .item .file {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 8px; /* Reduced from 10px */
 }
 
 .filelist .list .item .file .icon {
-    width: 52px;
-    height: 52px;
+    width: 42px; /* Reduced from 52px */
+    height: 42px; /* Reduced from 52px */
     margin-right: 15px;
     fill: #777;
     background-color: rgba(144, 147, 153, 0.08);
-    padding: 12px;
-    border-radius: 12px;
+    padding: 10px; /* Reduced from 12px */
+    border-radius: 10px; /* Reduced from 12px */
     transition: all 0.3s ease;
-}
-
-.filelist .list .item:hover .file .icon {
-    background-color: rgba(64, 158, 255, 0.1);
-    fill: #409eff;
 }
 
 .filelist .list .item .file .desc {
@@ -319,17 +329,17 @@ body {
 }
 
 .filelist .list .item .file .desc__name {
-    font-size: 16px;
+    font-size: 15px; /* Reduced from 16px */
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     font-weight: 600;
     color: #333;
-    margin-bottom: 8px;
+    margin-bottom: 6px; /* Reduced from 8px */
 }
 
 .filelist .list .item .file .desc__size {
-    font-size: 13px;
+    font-size: 12px; /* Reduced from 13px */
     color: #909399;
 }
 
@@ -337,50 +347,28 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 8px; /* Reduced from 10px */
     cursor: pointer;
-    margin-left: 12px;
+    margin-left: 10px; /* Reduced from 12px */
     border-radius: 50%;
     transition: all 0.3s ease;
     background-color: rgba(240, 240, 240, 0.5);
-    width: 40px;
-    height: 40px;
+    width: 34px; /* Reduced from 40px */
+    height: 34px; /* Reduced from 40px */
 }
 
 .filelist .list .item .file .link svg {
-    width: 20px;
-    height: 20px;
+    width: 18px; /* Reduced from 20px */
+    height: 18px; /* Reduced from 20px */
     transition: all 0.3s ease;
-}
-
-.filelist .list .item .file .link:hover {
-    background: rgba(64, 158, 255, 0.1);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-}
-
-.filelist .list .item .file .link:active {
-    transform: translateY(0);
-}
-
-.icon-copy:hover {
-    fill: #409eff !important;
-}
-
-.icon-copy-cid:hover {
-    fill: #67c23a !important;
-}
-
-.icon-delete:hover {
-    fill: #f56c6c !important;
 }
 
 .filelist .list .item .progress {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 12px;
-    margin-bottom: 10px;
+    font-size: 11px; /* Reduced from 12px */
+    margin-bottom: 8px; /* Reduced from 10px */
 }
 
 .filelist .list .item .progress .progress-bar {
@@ -702,44 +690,31 @@ body {
     }
 }
 
-.select-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-    flex-wrap: nowrap;
-    justify-content: center;
+/* 优化 container 在超小屏幕下的布局 */
+@media (max-width: 360px) {
+    .container {
+        max-width: 100%;
+        gap: 8px;
+        margin-top: 8px;
+        margin-bottom: 30px;
+    }
+    .upload, .filelist {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
 }
 
-.select-group label {
-    color: #444;
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.select-group select {
-    padding: 8px 15px;
-    border-radius: 10px;
-    border: 1px solid #e4e7ed;
-    color: #444;
-    font-size: 14px;
-    outline: none;
-    transition: all 0.3s ease;
-    background-color: #fff;
-    -webkit-appearance: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23444%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px top 50%;
-    background-size: 10px auto;
-    padding-right: 28px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.select-group select:focus {
-    border-color: #409eff;
-    box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.2);
+/* 优化 upload 和 filelist 在中小屏幕下的间距和圆角 */
+@media (max-width: 900px) {
+    .container {
+        gap: 18px;
+        margin-top: 12px;
+        margin-bottom: 30px;
+    }
+    .upload, .filelist {
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.09);
+    }
 }
 
 /* Toast notification styling */
@@ -840,29 +815,31 @@ body {
 
 /* Add footer styling */
 #footer {
-    margin-top: 20px;
+    position: fixed; /* added to stick footer at bottom */
+    bottom: 0;       /* added to position footer at bottom */
+    left: 0;       /* added to align footer to the left */
     color: rgba(255, 255, 255, 0.9);
     font-size: 14px;
     text-align: center;
-    padding: 15px;
+    padding: 20px; /* Adjusted padding for better spacing */
     width: 100%;
     background-color: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-radius: 12px 12px 0 0;
     z-index: 100;
+    box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+#footer .info {
+    margin-bottom: 10px; /* Add space between links and copyright text */
 }
 
 #footer a {
     color: rgba(255, 255, 255, 0.95);
     text-decoration: none;
     transition: color 0.2s;
-    margin: 0 5px;
-}
-
-#footer a:hover {
-    color: #fff;
-    text-decoration: underline;
+    margin: 0 8px; /* Adjusted horizontal margin for links */
 }
 
 /* Add loading animations */
@@ -1192,10 +1169,157 @@ body {
     margin-top: 10px;
 }
 
-#accessPassphraseInput {
+/* Styles for the batch share passphrase modal */
+#batchSharePassphraseModal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
     width: 100%;
-    padding: 10px;
-    padding-right: 40px; /* 为图标留出空间 */
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5); /* Darker overlay */
+    display: flex; /* Use flexbox for centering */
+    align-items: center; /* Vertical center */
+    justify-content: center; /* Horizontal center */
+}
+
+#batchSharePassphraseModal .modal-content {
+    background-color: #ffffff; /* Cleaner white background */
+    margin: auto; /* Centering fallback */
+    padding: 25px 30px; /* Increased padding */
+    border: none; /* Remove border */
+    width: 90%; /* Responsive width */
+    max-width: 450px; /* Max width */
+    border-radius: 12px; /* Softer corners */
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15); /* Enhanced shadow */
+    text-align: left; /* Align text to left for better readability */
+}
+
+#batchSharePassphraseModal h3 {
+    margin-top: 0;
+    margin-bottom: 20px; /* More space below title */
+    font-size: 18px; /* Slightly larger title */
+    color: #333; /* Darker text color */
+    text-align: center; /* Center the title */
+}
+
+#batchSharePassphraseModal .input-wrapper {
+    margin-bottom: 20px; /* More space below input */
+    position: relative; /* For password toggle positioning */
+}
+
+#batchSharePassphraseModal input[type="password"],
+#batchSharePassphraseModal input[type="text"] { /* Allow text type for visibility toggle */
+    width: 100%;
+    padding: 12px 40px 12px 12px; /* Adjust padding for icon */
     border: 1px solid #dcdfe6;
+    border-radius: 6px; /* Consistent border-radius */
+    font-size: 14px;
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    transition: border-color 0.3s ease;
+}
+
+#batchSharePassphraseModal input[type="password"]:focus,
+#batchSharePassphraseModal input[type="text"]:focus {
+    border-color: #409eff;
+    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+    outline: none;
+}
+
+#batchSharePassphraseModal .password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #909399;
+    cursor: pointer;
+    padding: 8px; /* Easier to click */
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#batchSharePassphraseModal .password-toggle:hover {
+    color: #409eff;
+}
+
+#batchSharePassphraseModal .modal-actions {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 10px; /* Space between buttons */
+}
+
+#batchSharePassphraseModal .modal-actions button {
+    padding: 10px 20px; /* Standard padding */
+    border-radius: 6px; /* Consistent border-radius */
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500; /* Slightly bolder text */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#batchSharePassphraseModal #confirmBatchSharePassphrase {
+    background-color: #409eff;
+    color: white;
+}
+
+#batchSharePassphraseModal #confirmBatchSharePassphrase:hover {
+    background-color: #66b1ff;
+    box-shadow: 0 2px 8px rgba(64, 158, 255, 0.2); /* Subtle shadow on hover */
+}
+
+#batchSharePassphraseModal #cancelBatchSharePassphrase {
+    background-color: #f0f2f5; /* Lighter background for cancel */
+    color: #606266; /* Darker text for cancel */
+    border: 1px solid #dcdfe6; /* Subtle border */
+}
+
+#batchSharePassphraseModal #cancelBatchSharePassphrase:hover {
+    background-color: #e4e7ed;
+    border-color: #c0c4cc;
+}
+
+/* 
+  Add these styles if needed. If the file doesn't exist or these styles 
+  conflict with existing ones, you can omit this section as the changes 
+  in index.html should be sufficient.
+*/
+
+.action-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
     border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: white;
+    transition: all 0.3s;
+    margin-left: 10px;
+    background-color: #409eff;
+}
+
+.action-button i {
+    margin-right: 5px;
+}
+
+.action-button:hover {
+    background-color: #66b1ff;
+}
+
+.action-button.disabled {
+    background-color: #c0c4cc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Make sure the .copyall matches the action button */
+.copyall {
+    text-decoration: none;
 }

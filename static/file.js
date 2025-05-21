@@ -7,6 +7,9 @@ $(document).ready(() => {
     // Create toast container
     $('body').append('<div class="toast-container"></div>');
 
+    // Initialize buttons in disabled state
+    $('.copyall, #shareSelected').addClass('disabled');
+
     function initEventListeners() {
         $(document).on('paste', handlePasteUpload);
         $('.upload .content').on('click', () => $('#file').click());
@@ -32,13 +35,15 @@ $(document).ready(() => {
             }
         });
         
-        // New: Batch sharing button functionality
-        $('#shareSelected').on('click', () => {
-            shareBatchFiles();
+        // Batch sharing button functionality
+        $('#shareSelected').on('click', function() {
+            if ($(this).hasClass('disabled')) return;
+            promptBatchSharePassphrase();
         });
         
         // New: Toggle all checkbox functionality
         $('#toggleAllFiles').on('click', function() {
+            if ($(this).prop('disabled')) return;
             const isChecked = $(this).prop('checked');
             $('.file-select-checkbox').prop('checked', isChecked);
             updateShareSelectedButtonState();
@@ -55,6 +60,16 @@ $(document).ready(() => {
                 // If all checkboxes are checked, check the "toggle all" checkbox
                 $('#toggleAllFiles').prop('checked', true);
             }
+        });
+
+        // Add click handler for copy all that respects disabled state
+        $('.copyall').on('click', function(e) {
+            if ($(this).hasClass('disabled')) {
+                e.preventDefault();
+                return false;
+            }
+            copyAllLinks();
+            return false;
         });
     }
     
@@ -391,9 +406,8 @@ $(document).ready(() => {
         $(`.${randomClass}`).find('.data-cid').val(res.Hash);
         $(`.${randomClass}`).find('.data-filename').val(file.name); // Store original filename
         
-        // Make sure the copyall button is visible
-        $('.copyall').fadeIn(300);
-        $('#shareSelected').fadeIn(300);
+        // Enable buttons since we have uploaded files
+        $('.copyall').removeClass('disabled');
         
         // Success notification
         showToast(_t('upload-success'), 'success');
@@ -673,10 +687,58 @@ function handlePassphraseSubmit(encryptedPayload, enteredPassphrase) {
 // Listen for hash changes to re-evaluate access mode (e.g., if user manually changes hash)
 $(window).on('hashchange', checkAccessMode);
 
-// New function to create a batch share
-function shareBatchFiles() {
+// --- Batch Share Passphrase Modal Logic ---
+function promptBatchSharePassphrase() {
+    const selectedItems = $('.file-select-checkbox:checked').closest('.item');
+    if (selectedItems.length === 0) {
+        showToast(_t('no-files-selected'), 'error');
+        return;
+    }
+
+    // Show the modal
+    $('#batchSharePassphraseModal').css('display', 'flex');
+    $('#batchPassphraseInput').val(''); // Clear previous input
+    $('#batchPassphraseInput').focus();
+
+    // Translate modal elements
+    $('#batchSharePassphraseModal h3').text(_t('batch-share-passphrase-title'));
+    $('#batchPassphraseInput').attr('placeholder', _t('batch-share-passphrase-placeholder'));
+    $('#confirmBatchSharePassphrase').text(_t('batch-share-confirm-copy'));
+    $('#cancelBatchSharePassphrase').text(_t('batch-share-cancel'));
+}
+
+function closeBatchSharePassphraseModal() {
+    $('#batchSharePassphraseModal').hide();
+}
+
+// Attach event listeners for the batch share passphrase modal
+$(document).ready(() => {
+    // ... existing ready listeners ...
+
+    $('#confirmBatchSharePassphrase').on('click', () => {
+        const passphrase = $('#batchPassphraseInput').val();
+        shareBatchFiles(passphrase); // Pass the passphrase to the main function
+        closeBatchSharePassphraseModal();
+    });
+
+    $('#cancelBatchSharePassphrase').on('click', () => {
+        closeBatchSharePassphraseModal();
+    });
+
+    // Allow pressing Enter to submit batch passphrase
+    $('#batchPassphraseInput').on('keypress', (e) => {
+        if (e.which === 13) { // Enter key
+            $('#confirmBatchSharePassphrase').click();
+        }
+    });
+});
+
+// Modified function to accept passphrase as an argument
+function shareBatchFiles(passphrase) { // passphrase is now an argument
     const selectedItems = $('.file-select-checkbox:checked').closest('.item');
     
+    // This check is technically redundant if promptBatchSharePassphrase already checks,
+    // but good for safety if shareBatchFiles is ever called directly.
     if (selectedItems.length === 0) {
         showToast(_t('no-files-selected'), 'error');
         return;
@@ -706,8 +768,8 @@ function shareBatchFiles() {
         return;
     }
     
-    // Get the passphrase if set
-    const passphrase = $('#passphraseInput').val();
+    // Get the passphrase if set - Now passed as an argument
+    // const passphrase = $('#passphraseInput').val(); // OLD: Read from global input
     
     // Create batch share
     if (passphrase) {
@@ -718,8 +780,8 @@ function shareBatchFiles() {
             copyToClipboard(batchShareUrl);
             showToast(_t('batch-share-link-copied'), 'success');
             
-            // Open the batch share page in a new tab
-            window.open(batchShareUrl, '_blank');
+            // Open the batch share page in a new tab - REMOVED
+            // window.open(batchShareUrl, '_blank');
         } else {
             showToast(_t('batch-encryption-failed'), 'error');
         }
@@ -731,8 +793,8 @@ function shareBatchFiles() {
         copyToClipboard(batchShareUrl);
         showToast(_t('batch-share-link-copied'), 'success');
         
-        // Open the batch share page in a new tab
-        window.open(batchShareUrl, '_blank');
+        // Open the batch share page in a new tab - REMOVED
+        // window.open(batchShareUrl, '_blank');
     }
 }
 
@@ -741,15 +803,23 @@ function updateShareSelectedButtonState() {
     const anyFilesUploaded = $('.item').length > 0;
     const anyFilesSelected = $('.file-select-checkbox:checked').length > 0;
     
-    if (!anyFilesUploaded) {
-        $('#shareSelected').hide();
-        $('#toggleAllFiles').prop('disabled', true);
+    // Update toggle all checkbox state
+    $('#toggleAllFiles').prop('disabled', !anyFilesUploaded);
+    
+    // Update copy all button state
+    if (anyFilesUploaded) {
+        $('.copyall').removeClass('disabled');
     } else {
-        $('#toggleAllFiles').prop('disabled', false);
-        if (anyFilesSelected) {
-            $('#shareSelected').fadeIn(300).removeClass('disabled');
-        } else {
-            $('#shareSelected').addClass('disabled');
-        }
+        $('.copyall').addClass('disabled');
+    }
+    
+    // Update share selected button state
+    if (!anyFilesUploaded || !anyFilesSelected) {
+        $('#shareSelected').addClass('disabled');
+    } else {
+        $('#shareSelected').removeClass('disabled');
     }
 }
+
+// Remove or modify the old function that hid/showed the buttons
+// And replace with appropriate calls to updateShareSelectedButtonState()
